@@ -3,13 +3,13 @@ use Mojo::Base -base;
 use Mojo::UserAgent;
 use Mojo::Util qw(url_escape);
 use JSON::XS;
-use Data::Dumper;
+use Carp;
 
 has ua => sub {Mojo::UserAgent->new->max_redirects(3)};
 
 sub suggest {
 	my $self = shift;
-	my $attrs = {eval{@_}} or return {'error' => "Error $!"};
+	my $attrs = {@_};
 
 	return {'error' => "Empty q"} unless $attrs->{'q'};
 
@@ -17,14 +17,14 @@ sub suggest {
 
 	eval {
 		my $body = $self->ua->get('http://www.androidrank.org/searchjson?name_startsWith='.url_escape($attrs->{'q'}))->result->body;
-		die "Can't fetch url$/" unless $body;
+		croak "Can't fetch url$/" unless $body;
 		$body =~ s/^\(//; 
 		$body =~ s/\)\;$//;
 		eval {
 			$json = decode_json($body);
-		} or die "Can't parse json$/";
+		} or croak "Can't parse json$/";
 
-		die "Invalid json$/" unless ref $json && $json->{'geonames'};
+		croak "Invalid json$/" unless ref $json && $json->{'geonames'};
 	} or return {'error' => $@};
 
 	return {'results' => $json->{'geonames'}};
@@ -33,7 +33,7 @@ sub suggest {
 
 sub get_app_detail {
 	my $self = shift;
-	my $attrs = {eval{@_}} or return {'error' => "Error $!"};
+	my $attrs = {@_};
 
 	return {'error' => "Empty ext_id"} unless $attrs->{'ext_id'};
 
