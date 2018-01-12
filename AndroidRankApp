@@ -1,0 +1,27 @@
+#!/usr/bin/env perl
+use Mojolicious::Lite;
+plugin 'Config';
+use lib 'lib';
+use Model::AndroidRank;
+
+helper ranks => sub { state $ranks = Model::AndroidRank->new };
+
+
+
+
+get '/' => sub {
+	shift->render(template => 'index');
+};
+
+get '/suggest' => sub {
+	my $c = shift;
+	$c->render(json => $c->ranks->suggest(q => $c->param('q')))
+};
+
+get '/detail/#appid' => sub {
+	my $c = shift;
+	$c->render(json => $c->ranks->get_app_detail(ext_id => $c->stash('appid')))
+};
+
+
+app->start;

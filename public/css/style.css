@@ -1,0 +1,23 @@
+h1.ui.center.header {
+	margin-top: 3em;
+}
+div.container {
+	margin-bottom:20px;
+}
+div.extra table {
+	float:left ! important;
+	width:auto ! important;
+	margin-right:20px ! important;
+}
+div.extra table caption {color:#000;font-weight:bold;}
+div.extra table td, div.extra table th {
+	text-align:left;
+	padding-right:10px;
+}
+div.extra2 {
+	font-size:80%;
+}
+
+div.clear_button {
+	float:right;
+}
